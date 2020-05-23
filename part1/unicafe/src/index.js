@@ -3,24 +3,31 @@ import ReactDOM from 'react-dom';
 
 const Statistic = ({text, value}) => {
   return (
-    <p>{text} {value}</p>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
 const Statistics = ({good, bad, neutral}) => {
   const total = good+neutral+bad;
-  if( total == 0 ) {
+  if( total === 0 ) {
     return (<p>No feedback given</p>)
   }
   return (
     <>
       <h1>statistics</h1>
-      <Statistic text="good" value={good}/>
-      <Statistic text="neutral" value={neutral}/>
-      <Statistic text="bad" value={bad}/>
-      <Statistic text="all" value={total}/>
-      <Statistic text="average" value={(good - bad) / total}/>
-      <Statistic text="positive" value={100.0 * good / total + ' %'}/>
+      <table>
+        <tbody>
+          <Statistic text="good" value={good}/>
+          <Statistic text="neutral" value={neutral}/>
+          <Statistic text="bad" value={bad}/>
+          <Statistic text="all" value={total}/>
+          <Statistic text="average" value={(good - bad) / total}/>
+          <Statistic text="positive" value={100.0 * good / total + ' %'}/>
+        </tbody>
+      </table>
     </>
   )
 }

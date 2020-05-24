@@ -13,13 +13,13 @@ const App = () => {
 
   const handleNameSubmit = (event) => {
     event.preventDefault();
-    setPersons([
-      ...persons,
-      {
-        name: newName
-      }
-    ]);
-    // console.log('Saved', newName);
+    console.log(persons);
+    if( persons.find( person => person.name === newName ) ) {
+      alert(`${newName} is already added to phonebook`);
+    } else {
+      setPersons(persons.concat({name: newName}));
+      // console.log('Saved', newName);
+    }
   }
 
   return (

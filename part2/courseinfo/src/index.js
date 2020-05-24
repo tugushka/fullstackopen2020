@@ -27,11 +27,10 @@ const Content = ({parts}) => {
   );
 }
 
-const Total = (props) => {
-  let totalExercises = 0;
-  props.parts.forEach(part => {
-    totalExercises += part.exercises;
-  });
+const Total = ({parts}) => {
+  const totalExercises = parts.reduce( (sum, part) => {
+    return sum + part.exercises;
+  }, 0);
   return (
     <div>
       <h4>Number of exercises {totalExercises}</h4>

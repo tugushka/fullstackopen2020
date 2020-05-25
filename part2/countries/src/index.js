@@ -2,6 +2,31 @@ import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+const Country = ({country, initialVisibility}) => { 
+  const [visibility, setVisibility] = useState(initialVisibility);
+  const style = {
+    display : (visibility ? '' : 'none')
+  }
+  return (
+    <div>
+      {country.name} <button onClick={() => setVisibility(!visibility)}>show</button>
+      <div style={style}>
+        <h1>{country.name}</h1>
+        <p>capital {country.capital}</p>
+        <p>population {country.population} </p>
+
+        <h4>languages</h4>
+        <ul>
+          {country.languages.map( language => 
+            <li key={country.name+language.name}>{language.name}</li>
+          )}
+        </ul>
+        <img src={country.flag} alt={country.name} style={{height:180}}/>
+      </div>
+    </div>
+  )
+}
+
 const Countries = ({countryList, filter}) => {
   const filteredCountries = countryList.filter( country => 
     country.name.toLowerCase().includes(filter.toLowerCase())
@@ -16,21 +41,8 @@ const Countries = ({countryList, filter}) => {
   }
   
   if( filteredCountries.length === 1 ) {
-    let curCountry = filteredCountries[0];
     return (
-      <div>
-        <h1>{curCountry.name}</h1>
-        <p>capital {curCountry.capital}</p>
-        <p>population {curCountry.population} </p>
-
-        <h4>languages</h4>
-        <ul>
-          {curCountry.languages.map( language => 
-            <li key={curCountry.name+language.name}>{language.name}</li>
-          )}
-        </ul>
-        <img src={curCountry.flag} alt={curCountry.name} style={{height:180}}/>
-      </div>
+      <Country country={filteredCountries[0]} initialVisibility={true}/>
     )
   }
   
@@ -38,7 +50,7 @@ const Countries = ({countryList, filter}) => {
     return (
       <div>
         { filteredCountries.map( country => (
-            <p key={country.name}>{country.name}</p>
+            <Country country={country} initialVisibility={false}/>
           )
         )}
       </div>

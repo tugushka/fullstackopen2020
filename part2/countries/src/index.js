@@ -2,8 +2,38 @@ import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-const Country = ({country, initialVisibility}) => { 
-  const [visibility, setVisibility] = useState(initialVisibility);
+const Weather = ({countryName}) => {
+  const api_key = process.env.REACT_APP_WEATHER_API_KEY
+  const [weather, setWeather] = useState(null);
+  console.log('api_key', api_key);
+  console.log('weather', weather);
+
+  useEffect(() => {
+    axios
+      .get(`http://api.openweathermap.org/data/2.5/weather?q=${countryName}&APPID=${api_key}`)
+      .then( response => {
+        console.log(response.data);
+        setWeather(response.data);
+      })
+  }, [])
+
+  return (
+    <div>
+      <h3>Weather in {countryName}</h3>
+      { weather &&
+      <>
+        <h4>temprature: </h4><p> {(weather.main.temp-273.15).toFixed(2)} Celcius</p>
+        <img src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`} alt={weather.weather[0].main} style={{height:40}} />
+        <p>Today's weather is {weather.weather[0].description}</p>
+        <h4>wind:</h4><p> speed {weather.wind.speed}, direction {weather.wind.deg}</p>
+      </>
+      }
+    </div>
+  )
+}
+
+const Country = ({country, onlyCountry}) => { 
+  const [visibility, setVisibility] = useState(onlyCountry);
   const style = {
     display : (visibility ? '' : 'none')
   }
@@ -22,6 +52,9 @@ const Country = ({country, initialVisibility}) => {
           )}
         </ul>
         <img src={country.flag} alt={country.name} style={{height:180}}/>
+        { onlyCountry &&
+          <Weather countryName={country.name} />
+        }
       </div>
     </div>
   )
@@ -42,7 +75,7 @@ const Countries = ({countryList, filter}) => {
   
   if( filteredCountries.length === 1 ) {
     return (
-      <Country country={filteredCountries[0]} initialVisibility={true}/>
+      <Country country={filteredCountries[0]} onlyCountry={true}/>
     )
   }
   
@@ -50,7 +83,7 @@ const Countries = ({countryList, filter}) => {
     return (
       <div>
         { filteredCountries.map( country => (
-            <Country country={country} initialVisibility={false}/>
+            <Country key={country.name} country={country} onlyCountry={false}/>
           )
         )}
       </div>

@@ -11,7 +11,7 @@ const App = () => {
     peoplesService.getAll()
       .then( response => {
         console.log(response);
-        setPersons([...response.data,{name: 'test', number:'-1'}]);
+        setPersons(response.data);
       });
   }, []);
 

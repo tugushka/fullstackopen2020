@@ -15,9 +15,20 @@ const PersonForm = ({persons, setPersons}) => {
 
   const handleNameSubmit = (event) => {
     event.preventDefault();
-    console.log(persons);
-    if( persons.find( person => person.name === newName ) ) {
-      alert(`${newName} is already added to phonebook`);
+    console.log('persons', persons);
+    const foundPerson = persons.find( person => person.name === newName );
+    if( foundPerson ) {
+      if( window.confirm(`${foundPerson.name} is already added to phonebook, replace the old number with a new one?`)) {  
+        peoplesService
+          .update({...foundPerson, number:newNumber}, foundPerson.id);
+  
+        peoplesService
+          .getAll()
+          .then( response => setPersons(response.data) )
+        
+        setNewName('');
+        setNewNumber('');
+      }
     } else {
       const newPerson = {name: newName, number: newNumber}
       console.log('Creating', newPerson);

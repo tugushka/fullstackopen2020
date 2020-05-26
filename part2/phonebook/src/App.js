@@ -11,7 +11,7 @@ const App = () => {
     peoplesService.getAll()
       .then( response => {
         console.log(response);
-        setPersons(response.data);
+        setPersons([...response.data,{name: 'test', number:'-1'}]);
       });
   }, []);
 
@@ -24,7 +24,7 @@ const App = () => {
       <PersonForm persons={persons} setPersons={setPersons}/>
 
       <h3>Numbers</h3>
-      <Persons persons={persons}/>
+      <Persons persons={persons} setPersons={setPersons}/>
     </div>
   )
 }

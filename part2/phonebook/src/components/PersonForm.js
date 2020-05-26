@@ -20,17 +20,26 @@ const PersonForm = ({persons, setPersons}) => {
       alert(`${newName} is already added to phonebook`);
     } else {
       const newPerson = {name: newName, number: newNumber}
-      
-      peoplesService.create(newPerson);
-      setPersons(persons.concat(newPerson));
+      console.log('Creating', newPerson);
+      peoplesService
+        .create(newPerson)
+        .then( response => {
+          console.log(response.data)
+          setNewName('');
+          setNewNumber('');
+        })
+
+      peoplesService
+        .getAll()
+        .then( response => setPersons(response.data) )
     }
   }
 
   return (
     <form onSubmit={handleNameSubmit}>
-      <div>name: <input onChange={handleNameChange} /></div>
-      <div>number: <input onChange={handleNumberChange} /></div>
-      <div><button type="submit">add</button></div>
+      name: <input onChange={handleNameChange} value={newName}/>
+      number: <input onChange={handleNumberChange} value={newNumber} />
+      <button type="submit">add</button>
     </form>
   )
 }

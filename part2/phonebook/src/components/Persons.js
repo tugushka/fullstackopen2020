@@ -1,20 +1,30 @@
 import React from 'react'
 import peoplesService from '../services/peoples'
 
-const Person = ({person, setPersons}) => {
+const Person = ({person, setPersons, setNotification}) => {
   const handleDeleteClick = (event) => {
     if( window.confirm(`Delete ${person.name}?`) ) {
       console.log('Deleting', person);
       peoplesService
         .remove(person.id)
+        .then( () => {
+          setNotification({
+            message:`Deleted ${person.name}`, 
+            type:'success'
+          });
+          setTimeout(() => setNotification(null), 5000);
+        })
         .catch( (error) => {
-          console.log('error', error);
+          setNotification({
+            message:`Error occured while deleting ${person.name}`, 
+            type:'error'
+          });
+          setTimeout(() => setNotification(null), 5000);
         })
       
       peoplesService
         .getAll()
         .then( response => {
-          console.log(`Renewing $persons to`, response.data);
           setPersons(response.data);
         })
     }
@@ -27,11 +37,11 @@ const Person = ({person, setPersons}) => {
   )
 }
 
-const Persons = ({persons, setPersons}) => {
+const Persons = ({persons, setPersons, setNotification}) => {
   return (
     <div>
       {persons.map( person => (
-        <Person key={person.name} person={person} setPersons={setPersons} />
+        <Person key={person.name} person={person} setPersons={setPersons} setNotification={setNotification} />
         )
       )}
     </div>

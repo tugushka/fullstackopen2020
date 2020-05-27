@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import peoplesService from '../services/peoples'
 
-const PersonForm = ({persons, setPersons}) => {
+const PersonForm = ({persons, setPersons, setNotification}) => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   
@@ -18,6 +18,7 @@ const PersonForm = ({persons, setPersons}) => {
     console.log('persons', persons);
     const foundPerson = persons.find( person => person.name === newName );
     if( foundPerson ) {
+      // Update existing person's number
       if( window.confirm(`${foundPerson.name} is already added to phonebook, replace the old number with a new one?`)) {  
         peoplesService
           .update({...foundPerson, number:newNumber}, foundPerson.id);
@@ -28,8 +29,14 @@ const PersonForm = ({persons, setPersons}) => {
         
         setNewName('');
         setNewNumber('');
+        setNotification({
+          message:`Updated phone number of ${foundPerson.name}`, 
+          type:'success'
+        });
+        setTimeout(() => setNotification(null), 5000);
       }
     } else {
+      // Add new person to db
       const newPerson = {name: newName, number: newNumber}
       console.log('Creating', newPerson);
       peoplesService
@@ -38,7 +45,21 @@ const PersonForm = ({persons, setPersons}) => {
           console.log(response.data)
           setNewName('');
           setNewNumber('');
+          setNotification({
+            message:`Added ${newPerson.name}`, 
+            type:'success'
+          });
+          setTimeout(() => setNotification(null), 5000);
         })
+        .catch( error => {
+          console.log('error', error);
+          setNotification({
+            message:`Failed to add ${newPerson.name}`, 
+            type:'error'
+          });
+          setTimeout(() => setNotification(null), 5000);
+        })
+      
 
       peoplesService
         .getAll()

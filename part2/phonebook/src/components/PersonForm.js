@@ -16,6 +16,10 @@ const PersonForm = ({persons, setPersons, setNotification}) => {
   const handleNameSubmit = (event) => {
     event.preventDefault();
     console.log('persons', persons);
+    // There's a bug when adding exact objects from two different tabs
+    // Because persons doesn't change when tab1 adds a person, submitting
+    // the same object from tab2 is processed.
+    // Gonna fix later lol
     const foundPerson = persons.find( person => person.name === newName );
     if( foundPerson ) {
       // Update existing person's number

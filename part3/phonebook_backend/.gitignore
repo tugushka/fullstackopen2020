@@ -1,2 +1,5 @@
 # dependencies
 /node_modules
+
+# rest api test
+test.rest

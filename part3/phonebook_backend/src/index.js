@@ -64,7 +64,13 @@ app.post('/api/persons', (req, res) => {
   console.log(body);
   if( !body.name || !body.number ) {
     return res.status(404).json({
-      error : 'content missing'
+      error : 'name or number is missing'
+    })
+  }
+
+  if( persons.find( person => person.name === body.name ) ) {
+    return res.status(400).json({
+      error : 'name must be unique'
     })
   }
 

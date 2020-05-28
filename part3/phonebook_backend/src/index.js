@@ -1,7 +1,20 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 
 app.use(express.json());
+
+morgan.token('body', (req, res) => {
+  // console.log('from token', req.body);
+  return JSON.stringify(req.body);
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body', {
+  skip: (req, res) => {
+    // console.log('from skip', req.method, req.method !== 'POST');
+    return req.method !== 'POST'
+  }
+}))
 
 let persons = [
   {
@@ -61,7 +74,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body;
-  console.log(body);
+  // console.log('from POST', body);
   if( !body.name || !body.number ) {
     return res.status(404).json({
       error : 'name or number is missing'

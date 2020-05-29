@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
 
-app.use(express.static('build'))
+app.use(express.static('build'));
 app.use(express.json());
 
 morgan.token('body', (req, res) => {
@@ -16,6 +16,8 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
     // console.log('from skip', req.method, req.method !== 'POST');
     // return req.method !== 'POST'
 }))
+
+mongoose.set('useFindAndModify', false);
 
 
 const Person = require('./models/person');
@@ -56,6 +58,20 @@ app.delete('/api/persons/:id', (req, res, next) => {
       } else {
         res.status(404).end();
       }
+    })
+    .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const person = {
+    name: req.body.name,
+    number: req.body.number
+  }
+
+  Person.findByIdAndUpdate(req.params.id, person, {new: true})
+    .then((updatedPerson) => {
+      console.log(`Updated ${req.params.id} :`, updatedPerson);
+      res.json(updatedPerson);
     })
     .catch(error => next(error))
 })

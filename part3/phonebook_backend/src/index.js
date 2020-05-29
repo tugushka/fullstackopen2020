@@ -12,10 +12,9 @@ morgan.token('body', (req, res) => {
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body', {
-  skip: (req, res) => {
+  // skip: (req, res) => {
     // console.log('from skip', req.method, req.method !== 'POST');
-    return req.method !== 'POST'
-  }
+    // return req.method !== 'POST'
 }))
 
 const Person = require('./models/person');
@@ -37,7 +36,6 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  console.log('GET', req.params.id);
   Person.findById(req.params.id)
     .then(result => {
       res.json(person);
@@ -50,7 +48,6 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  console.log('Delete id: ', req.params.id);
   Person.findByIdAndDelete(req.params.id)
     .then((result) => {
       console.log(`Deleted ${req.params.id} :`, result);
@@ -64,7 +61,6 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body;
-  console.log('from POST', body);
   if( !body.name || !body.number ) {
     return res.status(404).json({
       error : 'name or number is missing'

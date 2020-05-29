@@ -17,11 +17,11 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
     // return req.method !== 'POST'
 }))
 
+
 const Person = require('./models/person');
 
 app.get('/info', (req, res) => {
   Person.find({}).then( result => {
-    mongoose.connect.close();
     res.send(`
       <p>Phonebook has info for ${result.length} people</p>
       <p>${(new Date()).toUTCString()}</p>`
@@ -47,16 +47,17 @@ app.get('/api/persons/:id', (req, res) => {
     })
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
     .then((result) => {
-      console.log(`Deleted ${req.params.id} :`, result);
-      res.status(204).end();
+      if( result ){
+        console.log(`Deleted ${req.params.id} :`, result);
+        res.json(result);
+      } else {
+        res.status(404).end();
+      }
     })
-    .catch( error => {
-      console.log('Can\'t find person with given id', error.message);
-      res.status(204).end();
-    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -76,6 +77,19 @@ app.post('/api/persons', (req, res) => {
     res.json(result);
   })
 })
+
+
+const errorHandler = (error, request, response, next) => {
+  console.error('Error: ', error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

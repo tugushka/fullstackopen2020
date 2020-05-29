@@ -37,16 +37,16 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
-    .then(result => {
-      res.json(person);
+    .then(person => {
+      if( person ){
+        res.json(person);
+      } else {
+        res.status(404).send(`Can\'t find person with given id: ${req.params.id}`)
+      }
     })
-    .catch( error => {
-      console.log('Can\'t find person with given id: ', error.message);
-      
-      res.status(404).end();
-    })
+    .catch( error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -96,8 +96,6 @@ app.post('/api/persons', (req, res) => {
 
 
 const errorHandler = (error, request, response, next) => {
-  console.error('Error: ', error.message)
-
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } 

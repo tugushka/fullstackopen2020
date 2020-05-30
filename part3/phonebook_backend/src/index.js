@@ -18,7 +18,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 }))
 
 mongoose.set('useFindAndModify', false);
-
+mongoose.set('useCreateIndex', true);
 
 const Person = require('./models/person');
 
@@ -76,13 +76,8 @@ app.put('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body;
-  if( !body.name || !body.number ) {
-    return res.status(404).json({
-      error : 'name or number is missing'
-    })
-  }
 
   const person = new Person({
     name: body.name,
@@ -92,13 +87,17 @@ app.post('/api/persons', (req, res) => {
   person.save().then(result => {
     res.json(result);
   })
+  .catch(error => next(error))
 })
 
 
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
+  if( error.name === 'ValidationError' ) {
+    return response.status(400).json({error : error.message})
+  }
 
   next(error)
 }

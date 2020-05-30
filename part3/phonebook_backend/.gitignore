@@ -9,3 +9,6 @@ test.rest
 
 #build
 /build
+
+#heroku deploy script
+heroku_deploy.sh

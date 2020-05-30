@@ -7,8 +7,5 @@ test.rest
 #environment value
 .env
 
-#build
-/build
-
 #heroku deploy script
 heroku_deploy.sh

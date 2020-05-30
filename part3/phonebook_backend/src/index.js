@@ -6,15 +6,15 @@ const mongoose = require('mongoose');
 app.use(express.static('build'));
 app.use(express.json());
 
-morgan.token('body', (req, res) => {
+morgan.token('body', (req) => {
   // console.log('from token', req.body);
   return JSON.stringify(req.body);
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body', {
   // skip: (req, res) => {
-    // console.log('from skip', req.method, req.method !== 'POST');
-    // return req.method !== 'POST'
+  //   console.log('from skip', req.method, req.method !== 'POST');
+  //   return req.method !== 'POST'
 }))
 
 mongoose.set('useFindAndModify', false);
@@ -43,7 +43,7 @@ app.get('/api/persons/:id', (req, res, next) => {
       if( person ){
         res.json(person);
       } else {
-        res.status(404).send(`Can\'t find person with given id: ${req.params.id}`)
+        res.status(404).send(`Can't find person with given id: ${req.params.id}`)
       }
     })
     .catch( error => next(error))
@@ -86,10 +86,11 @@ app.post('/api/persons', (req, res, next) => {
     number: body.number
   });
 
-  person.save().then(result => {
-    res.json(result);
-  })
-  .catch(error => next(error))
+  person.save()
+    .then(result => {
+      res.json(result);
+    })
+    .catch(error => next(error))
 })
 
 

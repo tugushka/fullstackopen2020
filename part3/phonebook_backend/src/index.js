@@ -68,12 +68,14 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: req.body.number
   }
 
-  Person.findByIdAndUpdate(req.params.id, person, {new: true})
+  Person.findByIdAndUpdate( req.params.id, person, {runValidators: true, context: 'query', new: true})
     .then((updatedPerson) => {
       console.log(`Updated ${req.params.id} :`, updatedPerson);
       res.json(updatedPerson);
     })
-    .catch(error => next(error))
+    .catch(error => {
+      next(error)
+    })
 })
 
 app.post('/api/persons', (req, res, next) => {

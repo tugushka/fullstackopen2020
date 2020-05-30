@@ -25,19 +25,27 @@ const PersonForm = ({persons, setPersons, setNotification}) => {
       // Update existing person's number
       if( window.confirm(`${foundPerson.name} is already added to phonebook, replace the old number with a new one?`)) {  
         peoplesService
-          .update({...foundPerson, number:newNumber}, foundPerson.id);
+          .update({...foundPerson, number:newNumber}, foundPerson.id)
+          .then( () => {
+            setNewName('');
+            setNewNumber('');
+            setNotification({
+              message:`Updated phone number of ${foundPerson.name}`, 
+              type:'success'
+            });
+          })
+          .catch( error => {
+            console.log('error.response from update', error.response)
+            setNotification({
+              message: error.response.data.error, 
+              type:'error'
+            });
+          })
   
         peoplesService
           .getAll()
           .then( response => setPersons(response.data) )
         
-        setNewName('');
-        setNewNumber('');
-        setNotification({
-          message:`Updated phone number of ${foundPerson.name}`, 
-          type:'success'
-        });
-        setTimeout(() => setNotification(null), 5000);
       }
     } else {
       // Add new person to db
@@ -53,15 +61,13 @@ const PersonForm = ({persons, setPersons, setNotification}) => {
             message:`Added ${newPerson.name}`, 
             type:'success'
           });
-          setTimeout(() => setNotification(null), 5000);
         })
         .catch( error => {
-          console.log('error', error);
+          console.log('error.response', error.response)
           setNotification({
-            message:`Failed to add ${newPerson.name}`, 
+            message: error.response.data.error, 
             type:'error'
           });
-          setTimeout(() => setNotification(null), 5000);
         })
       
 

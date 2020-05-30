@@ -20,7 +20,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification notification={notification}/>
+      <Notification notification={notification} setNotification={setNotification}/>
       <Filter persons={persons} />
 
       <h3>Add a new</h3>

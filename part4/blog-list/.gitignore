@@ -1,0 +1,8 @@
+#node modules
+node_modules/
+
+#VSC rest api
+test.rest
+
+#Environment config
+.env

@@ -35,4 +35,28 @@ const mostBlogs = (blogs) => {
   return authorWithMostBlog;
 }
 
-module.exports = {dummy, totalLikes, favoriteBlog, mostBlogs};
+const mostLikes = (blogs) => {
+  const blogAuthors = blogs
+    .reduce( (authors, blog) => {
+      const indexOfAuthor = authors.findIndex( author => author.author === blog.author );
+      if( indexOfAuthor !== -1 ) {
+        authors[indexOfAuthor].likes += blog.likes;
+        return authors;
+      } else {
+        return authors.concat({author: blog.author, likes: blog.likes});
+      }
+    }, [])
+  console.log('blogAuthors', blogAuthors);
+
+  const authorWithMostLikes = blogAuthors
+    .reduce(
+      (cur_author, author) => cur_author.likes > author.likes ? cur_author : author,
+      {author: '', likes: 0}
+    )
+
+    console.log('authorWithMostLikes', authorWithMostLikes)
+  
+  return authorWithMostLikes;
+}
+
+module.exports = {dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes};

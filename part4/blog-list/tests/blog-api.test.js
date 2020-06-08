@@ -106,6 +106,29 @@ describe('Addition of blog', () => {
       expect(response.body.likes).toBeDefined();
       expect(response.body.likes).toBe(0);
   })
+
+  test('check if added blog is malformed', async () => {
+    const newBlogs = [
+      {
+      "title": "",
+      "author": "anon",
+      "url": "ayy-blog",
+      },
+      {
+      "title": "ayy blog",
+      "author": "anon",
+      "url": "",
+      },
+      {
+      },
+    ]
+    for(newBlog of newBlogs) {
+      const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400);
+    }
+  })
 })
 
 afterAll(() => {

@@ -71,6 +71,28 @@ describe('check if blog id exists', () => {
   })
 })
 
+describe('Addition of blog', () => {
+  test('Addition of single blog', async () => {
+    const newBlog = {
+      "title": "ayy blog",
+      "author": "anon",
+      "url": "ayy-blog",
+      "likes": "0"
+    }
+
+    const totalBlogsBefore = (await blogHelper.getBlogs()).length;
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201);
+    
+    const totalBlogs = (await blogHelper.getBlogs()).length;
+
+    expect(totalBlogs).toBe(totalBlogsBefore+1);
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close();
 })

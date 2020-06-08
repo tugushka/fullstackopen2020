@@ -91,6 +91,21 @@ describe('Addition of blog', () => {
 
     expect(totalBlogs).toBe(totalBlogsBefore+1);
   })
+
+  test('check if field likes exist', async () => {
+    const newBlog = {
+      "title": "ayy blog",
+      "author": "anon",
+      "url": "ayy-blog",
+    }
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201);
+
+      expect(response.body.likes).toBeDefined();
+      expect(response.body.likes).toBe(0);
+  })
 })
 
 afterAll(() => {

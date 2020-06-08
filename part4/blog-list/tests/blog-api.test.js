@@ -128,6 +128,9 @@ describe('Addition of blog', () => {
         .send(newBlog)
         .expect(400);
     }
+
+    const blogs = await blogHelper.getBlogs()
+    expect(blogs.length).toBe(blogHelper.initialBlogs.length);
   })
 })
 

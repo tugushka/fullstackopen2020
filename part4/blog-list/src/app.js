@@ -8,6 +8,8 @@ require('express-async-errors');
 
 const mongoUrl = config.MONGODB_URI
   
+mongoose.set('useFindAndModify', false);
+
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then( () => {
     console.log('Connected to MongoDB');

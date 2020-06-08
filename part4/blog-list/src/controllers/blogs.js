@@ -19,4 +19,18 @@ blogsRouter.post('/', async (request, response) => {
   }
 })
 
+blogsRouter.delete('/', async (request, response) =>{
+  const result = await Blog.findOneAndDelete(request.body);
+  response.status(204).end();
+})
+
+blogsRouter.put('/', async (request, response) =>{
+  try {
+    await Blog.findOneAndUpdate(request.body);
+    response.status(204).end();
+  } catch(error) {
+    response.status(400).end();
+  }
+})
+
 module.exports = blogsRouter;

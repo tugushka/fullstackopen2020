@@ -1,36 +1,45 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
-
+const User = require('../models/user');
 //Route: '/api/blogs'
 
-blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({});
+blogsRouter.get('/', async (req, res) => {
+  const blogs = await Blog
+    .find({})
+    .populate('user', {blogs: 0});
 
-  response.json(blogs)
+  res.json(blogs)
 })
 
-blogsRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body);
-  try {
-    const result = await blog.save();
-    response.status(201).json(result);
-  } catch(error) {
-    response.status(400).end();
-  }
+blogsRouter.post('/', async (req, res) => {
+  const body = req.body;
+  console.log("POST body:", body);
+
+  const user = await User.findById(body.id);
+
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+    user: user._id
+  });
+
+  const savedBlog = await blog.save();
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
+
+  res.status(201).json(savedBlog);
 })
 
-blogsRouter.delete('/', async (request, response) =>{
-  const result = await Blog.findOneAndDelete(request.body);
-  response.status(204).end();
+blogsRouter.delete('/', async (req, res) =>{
+  const result = await Blog.findOneAndDelete(req.body);
+  res.status(204).end();
 })
 
-blogsRouter.put('/', async (request, response) =>{
-  try {
-    await Blog.findOneAndUpdate(request.body);
-    response.status(204).end();
-  } catch(error) {
-    response.status(400).end();
-  }
+blogsRouter.put('/', async (req, res) =>{
+  await Blog.findOneAndUpdate(req.body);
+  res.status(204).end();
 })
 
 module.exports = blogsRouter;

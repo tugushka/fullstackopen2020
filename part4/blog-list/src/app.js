@@ -10,6 +10,7 @@ const usersRouter = require('./controllers/users');
 const mongoUrl = config.MONGODB_URI
   
 mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then( () => {

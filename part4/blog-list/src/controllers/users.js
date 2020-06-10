@@ -11,8 +11,12 @@ userRoute.get('/', async (req, res) => {
 userRoute.post('/', async (req, res) => {
   const body = req.body;
 
-  if( (!body.username) || (!body.name) || (!body.password) ) {
-    return res.status(400).end();
+  if( (!body.username) || (!body.password) ) {
+    throw {message: "No username or password given", name: "ValidationError"}
+  }
+
+  if( (body.username.length < 3) || (body.password.length < 3) ) {  
+    throw {message: "Length of username or password is less than 3", name: "ValidationError"}
   }
 
   const passwordHash = await bcrypt.hash(body.password, 10);

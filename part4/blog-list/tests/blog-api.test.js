@@ -1,4 +1,4 @@
-const blogHelper = require('../src/utils/blog_test_helper');
+const blogHelper = require('../src/utils/test/blog_test_helper');
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 const Blog = require('./../src/models/blog');

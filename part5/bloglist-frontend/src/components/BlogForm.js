@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import blogService from './../services/blogs'
 
-const BlogForm = ({userToken}) => {
+const BlogForm = ({userToken, setNotification}) => {
   const [title,setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -9,8 +9,11 @@ const BlogForm = ({userToken}) => {
   const handleStoreBlog = async (event) => {
     event.preventDefault();
     try {
-      blogService.store({title, author, url}, userToken);
+      await blogService.store({title, author, url}, userToken);
+
+      setNotification(`a new blog ${title} by ${author} added`);
     } catch(error) {
+      setNotification(`Error occured while storing the new blog`);
       console.log('Error: ', error.message);
     }
   }

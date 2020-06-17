@@ -6,6 +6,6 @@ const login = async (username, password) => {
   return resp.data;
 }
 
-module.exports = {
+export default {
   login
 }
